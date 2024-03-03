@@ -96,10 +96,34 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
 	exponent = 2;
 	x = 1;
-	for (j = 1; j < 16; j++) {
+	for (j = 1; j < 12; j++) {
 		x = x * 2;
-		exponent = exponent * 2;
 		printf("x = %f\n", x);
+
+		begin = clock();
+		for (i = 0; i < 1000000; i++) {
+			result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
+			// printf("%f * 2^%d = %f\n", x, exponent, res);
+		}
+		end = clock();
+	
+		printf("time elapsed: %d\n", end - begin);
+
+		begin = clock();
+		for (i = 0; i < 1000000; i++) {
+			res = ldexp(x, exponent);
+			// printf("%f * 2^%d = %f\n", x, exponent, res);
+		}
+		end = clock();
+
+		printf("time elapsed: %d\n", end - begin);
+	}
+	printf("\n\n");
+
+	exponent = 2;
+	x = 10.5;
+	for (j = 1; j < 14; j++) {
+		exponent = exponent * 2;
 		printf("exponent = %d\n", exponent);
 
 		begin = clock();
