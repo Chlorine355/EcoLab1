@@ -97,7 +97,8 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
 
 
-	printf("%f * 2^%d = %f", x, exponent, res);
+	printf("%f * 2^%d = %f\n", x, exponent, res);
+	printf("%f * 2^%d = %f\n", x, exponent, ldexp(x, exponent));
 	scanf_s("%c", &c);
 
 
