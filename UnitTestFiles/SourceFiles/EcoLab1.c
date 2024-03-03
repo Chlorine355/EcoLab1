@@ -26,6 +26,7 @@
 #include "IdEcoLab1.h"
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 /*
  *
@@ -49,6 +50,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 	int exponent;
 	double x, res;
 	char c;
+	clock_t begin, end;
     /* Указатель на тестируемый интерфейс */
     IEcoLab1* pIEcoLab1 = 0;
 
@@ -94,11 +96,21 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
 	x = 65356.6656;
 	exponent = 4;
+
+	begin = clock();
     result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
-
-
 	printf("%f * 2^%d = %f\n", x, exponent, res);
-	printf("%f * 2^%d = %f\n", x, exponent, ldexp(x, exponent));
+	end = clock();
+	
+	printf("time elapsed: %d\n", begin - end);
+
+	begin = clock();
+	res = ldexp(x, exponent);
+	printf("%f * 2^%d = %f\n", x, exponent, res);
+	end = clock();
+
+	printf("time elapsed: %d\n", begin - end);
+	
 	scanf_s("%c", &c);
 
 
