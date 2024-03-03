@@ -111,6 +111,24 @@ uint32_t ECOCALLMETHOD CEcoLab1_Release(/* in */ struct IEcoLab1* me) {
     return pCMe->m_cRef;
 }
 
+
+
+double ipow(double base, int exp)
+{
+    double result = 1;
+    for (;;)
+    {
+        if (exp & 1)
+            result *= base;
+        exp >>= 1;
+        if (!exp)
+            break;
+        base *= base;
+    }
+
+    return result;
+}
+
 /*
  *
  * <сводка>
@@ -124,7 +142,7 @@ uint32_t ECOCALLMETHOD CEcoLab1_Release(/* in */ struct IEcoLab1* me) {
  */
 int16_t ECOCALLMETHOD CEcoLab1_MyFunction(/* in */ struct IEcoLab1* me, /* in */ double x, int16_t exponent, /* out */ double* out) {
     CEcoLab1* pCMe = (CEcoLab1*)me;
-    double res = x * pow(2, exponent);
+    double res = x * ipow(2, exponent);
 	
     /* Проверка указателей */
     if (me == 0 || x == 0 || exponent == 0 || out == 0) {

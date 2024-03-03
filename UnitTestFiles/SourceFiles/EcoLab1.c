@@ -48,6 +48,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     IEcoMemoryAllocator1* pIMem = 0;
 	int exponent;
 	double x, res;
+	char c;
     /* Указатель на тестируемый интерфейс */
     IEcoLab1* pIEcoLab1 = 0;
 
@@ -91,12 +92,13 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
         goto Release;
     }
 
-	x = 3.5;
+	x = 65356.6656;
 	exponent = 4;
     result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
 
+
 	printf("%f * 2^%d = %f", x, exponent, res);
-	scanf("%d", &x);
+	scanf_s("%c", &c);
 
 
 Release:
