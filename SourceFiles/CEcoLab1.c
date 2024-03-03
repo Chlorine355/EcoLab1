@@ -21,6 +21,8 @@
 #include "IEcoInterfaceBus1.h"
 #include "IEcoInterfaceBus1MemExt.h"
 #include "CEcoLab1.h"
+#include <math.h>
+
 
 /*
  *
@@ -112,35 +114,25 @@ uint32_t ECOCALLMETHOD CEcoLab1_Release(/* in */ struct IEcoLab1* me) {
 /*
  *
  * <сводка>
- *   Функция MyFunction
+ *   Функция Idexp
  * </сводка>
  *
  * <описание>
- *   Функция
+ *   Реализация аналога функции double ldexp(double x, int exponent) из <math.h>
  * </описание>
  *
  */
-int16_t ECOCALLMETHOD CEcoLab1_MyFunction(/* in */ struct IEcoLab1* me, /* in */ char_t* Name, /* out */ char_t** copyName) {
+int16_t ECOCALLMETHOD CEcoLab1_MyFunction(/* in */ struct IEcoLab1* me, /* in */ double x, int16_t exponent, /* out */ double* out) {
     CEcoLab1* pCMe = (CEcoLab1*)me;
-    int16_t index = 0;
-
+    double res = x * pow(2, exponent);
+	
     /* Проверка указателей */
-    if (me == 0 || Name == 0 || copyName == 0) {
+    if (me == 0 || x == 0 || exponent == 0 || out == 0) {
         return -1;
     }
 
-    /* Копирование строки */
-    while(Name[index] != 0) {
-        index++;
-    }
-    pCMe->m_Name = (char_t*)pCMe->m_pIMem->pVTbl->Alloc(pCMe->m_pIMem, index + 1);
-    index = 0;
-    while(Name[index] != 0) {
-        pCMe->m_Name[index] = Name[index];
-        index++;
-    }
-    *copyName = pCMe->m_Name;
-
+	(*out) = res;
+	
     return 0;
 }
 

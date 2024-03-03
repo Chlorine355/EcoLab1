@@ -25,6 +25,7 @@
 #include "IdEcoFileSystemManagement1.h"
 #include "IdEcoLab1.h"
 #include <stdio.h>
+#include <math.h>
 
 /*
  *
@@ -45,8 +46,8 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     IEcoInterfaceBus1* pIBus = 0;
     /* Указатель на интерфейс работы с памятью */
     IEcoMemoryAllocator1* pIMem = 0;
-    char_t* name = 0;
-    char_t* copyName = 0;
+	int exponent;
+	double x, res;
     /* Указатель на тестируемый интерфейс */
     IEcoLab1* pIEcoLab1 = 0;
 
@@ -82,12 +83,6 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
         goto Release;
     }
 
-    /* Выделение блока памяти */
-    name = (char_t *)pIMem->pVTbl->Alloc(pIMem, 10);
-
-    /* Заполнение блока памяти */
-    pIMem->pVTbl->Fill(pIMem, name, 'a', 9);
-
 
     /* Получение тестируемого интерфейса */
     result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoLab1, 0, &IID_IEcoLab1, (void**) &pIEcoLab1);
@@ -96,15 +91,13 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
         goto Release;
     }
 
+	x = 3.5;
+	exponent = 4;
+    result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
 
-    result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, name, &copyName);
-	printf("%d", result);
-	scanf("%d", &result);
+	printf("%f * 2^%d = %f", x, exponent, res);
+	scanf("%d", &x);
 
-
-
-    /* Освлбождение блока памяти */
-    pIMem->pVTbl->Free(pIMem, name);
 
 Release:
 
