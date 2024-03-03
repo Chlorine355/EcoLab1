@@ -96,7 +96,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
 	exponent = 2;
 	x = 1;
-	for (j = 1; j < 12; j++) {
+	for (j = 1; j < 30; j++) {
 		x = x * 2;
 		printf("x = %f\n", x);
 
@@ -116,12 +116,13 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 		}
 		end = clock();
 
-		printf("time elapsed: %d\n", end - begin);
+		printf("time elapsed: %d\n\n", end - begin);
+
 	}
 	printf("\n\n");
 
 	exponent = 2;
-	x = 10.5;
+	x = 10.3;
 	for (j = 1; j < 14; j++) {
 		exponent = exponent * 2;
 		printf("exponent = %d\n", exponent);
@@ -142,7 +143,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 		}
 		end = clock();
 
-		printf("time elapsed: %d\n", end - begin);
+		printf("time elapsed: %d\n\n", end - begin);
 	}
 	
 	scanf_s("%c", &c);

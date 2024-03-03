@@ -112,10 +112,21 @@ uint32_t ECOCALLMETHOD CEcoLab1_Release(/* in */ struct IEcoLab1* me) {
 }
 
 
+/*
+ *
+ * <сводка>
+ *   Функция ipow
+ * </сводка>
+ *
+ * <описание>
+ *   вспомогательная функция для вычисления степени двойки
+ * </описание>
+ *
+ */
 
-double ipow(double base, int exp)
+int ipow(int base, int exp)
 {
-    double result = 1;
+    int result = 1;
     for (;;)
     {
         if (exp & 1)
