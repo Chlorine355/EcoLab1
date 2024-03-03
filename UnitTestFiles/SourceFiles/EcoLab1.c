@@ -47,7 +47,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     IEcoInterfaceBus1* pIBus = 0;
     /* Указатель на интерфейс работы с памятью */
     IEcoMemoryAllocator1* pIMem = 0;
-	int exponent, i;
+	int exponent, i, j;
 	double x, res;
 	char c;
 	clock_t begin, end;
@@ -94,26 +94,32 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
         goto Release;
     }
 
-	x = 0.95;
-	exponent = 4;
+	exponent = 2;
+	x = 1;
+	for (j = 1; j < 16; j++) {
+		x = x * 2;
+		exponent = exponent * 2;
+		printf("x = %f\n", x);
+		printf("exponent = %d\n", exponent);
 
-	begin = clock();
-	for (i = 0; i < 1000000; i++) {
-		result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
-		// printf("%f * 2^%d = %f\n", x, exponent, res);
-	}
-	end = clock();
+		begin = clock();
+		for (i = 0; i < 1000000; i++) {
+			result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
+			// printf("%f * 2^%d = %f\n", x, exponent, res);
+		}
+		end = clock();
 	
-	printf("time elapsed: %d\n", end - begin);
+		printf("time elapsed: %d\n", end - begin);
 
-	begin = clock();
-	for (i = 0; i < 1000000; i++) {
-		res = ldexp(x, exponent);
-		// printf("%f * 2^%d = %f\n", x, exponent, res);
+		begin = clock();
+		for (i = 0; i < 1000000; i++) {
+			res = ldexp(x, exponent);
+			// printf("%f * 2^%d = %f\n", x, exponent, res);
+		}
+		end = clock();
+
+		printf("time elapsed: %d\n", end - begin);
 	}
-	end = clock();
-
-	printf("time elapsed: %d\n", end - begin);
 	
 	scanf_s("%c", &c);
 
