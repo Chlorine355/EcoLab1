@@ -193,7 +193,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 		printf("x = %f\n", x);
 		begin = clock();
 		for (i = 0; i < 1000000; i++) {
-			result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
+			result = pIEcoLab2->pVTbl->MyFunction(pIEcoLab2, x, exponent, &res);
 			// printf("%f * 2^%d = %f\n", x, exponent, res);
 		}
 		end = clock();
@@ -220,7 +220,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
 		begin = clock();
 		for (i = 0; i < 1000000; i++) {
-			result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
+			result = pIEcoLab2->pVTbl->MyFunction(pIEcoLab2, x, exponent, &res);
 			// printf("%f * 2^%d = %f\n", x, exponent, res);
 		}
 		end = clock();
