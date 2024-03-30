@@ -179,6 +179,12 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
     pIY->pVTbl->Release(pIY);
 
+	printf("\nStart testing ldexp interface using aggregated component:\n");
+
+    result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoLab2, 0, &IID_IEcoLab1, (void**) &pIEcoLab2);
+    if (result == 0) {
+        printf("Can aggregate IEcoLab1 interface using CEcoLab2\n");
+    }
 	
 	exponent = 2;
 	x = 1;
