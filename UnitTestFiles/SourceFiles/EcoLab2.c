@@ -194,7 +194,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 		begin = clock();
 		for (i = 0; i < 1000000; i++) {
 			result = pIEcoLab2->pVTbl->MyFunction(pIEcoLab2, x, exponent, &res);
-			// printf("%f * 2^%d = %f\n", x, exponent, res);
+			//printf("%f * 2^%d = %f\n", x, exponent, res);
 		}
 		end = clock();
 	
