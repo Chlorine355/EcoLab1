@@ -24,6 +24,9 @@
 #include "IdEcoInterfaceBus1.h"
 #include "IdEcoFileSystemManagement1.h"
 #include "IdEcoLab1.h"
+#include "IEcoCalculatorY.h"
+#include "IEcoCalculatorX.h"
+#include "IdEcoLab2.h"
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
@@ -53,6 +56,11 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 	clock_t begin, end;
     /* Указатель на тестируемый интерфейс */
     IEcoLab1* pIEcoLab1 = 0;
+
+    IEcoCalculatorY* pIY = 0;
+    IEcoCalculatorX* pIX = 0;
+
+    IEcoLab1* pIEcoLab2 = 0;
 
     /* Проверка и создание системного интрефейса */
     if (pISys == 0) {
@@ -88,18 +96,82 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
 
     /* Получение тестируемого интерфейса */
-    result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoLab1, 0, &IID_IEcoLab1, (void**) &pIEcoLab1);
+        result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoLab1, 0, &IID_IEcoLab1, (void**) &pIEcoLab1);
     if (result != 0 || pIEcoLab1 == 0) {
         /* Освобождение интерфейсов в случае ошибки */
         goto Release;
     }
 
+    result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoCalculatorY, (void **) &pIY);
+    if (result != 0 || pIY == 0) {
+        goto Release;
+    }
+
+    result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoCalculatorX, (void **) &pIX);
+    if (result != 0 || pIX == 0) {
+        goto Release;
+    }
+	
+
+	result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoCalculatorX, (void **) &pIX);
+    if (result == 0) {
+        pIX->pVTbl->Release(pIX);
+        printf("Can get pointer to IX via IEcoLab1\n");
+    }
+    result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoCalculatorY, (void **) &pIY);
+    if (result == 0) {
+        pIY->pVTbl->Release(pIY);
+        printf("Can get pointer to IY via IEcoLab1\n");
+    }
+    result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoLab1, (void **) &pIEcoLab1);
+    if (result == 0) {
+        pIEcoLab1->pVTbl->Release(pIEcoLab1);
+        printf("Can get pointer to IEcoLab1 via IEcoLab1\n");
+    }
+
+    result = pIY->pVTbl->QueryInterface(pIY, &IID_IEcoCalculatorX, (void **) &pIX);
+    if (result == 0) {
+        pIX->pVTbl->Release(pIX);
+        printf("Can get pointer to IX via IY\n");
+    }
+    result = pIY->pVTbl->QueryInterface(pIY, &IID_IEcoCalculatorY, (void **) &pIY);
+    if (result == 0) {
+        pIY->pVTbl->Release(pIY);
+        printf("Can get pointer to IY via IY\n");
+    }
+    result = pIY->pVTbl->QueryInterface(pIY, &IID_IEcoLab1, (void **) &pIEcoLab1);
+    if (result == 0) {
+        pIEcoLab1->pVTbl->Release(pIEcoLab1);
+        printf("Can get pointer to IEcoLab1 via IY\n");
+    }
+
+    result = pIX->pVTbl->QueryInterface(pIX, &IID_IEcoCalculatorX, (void **) &pIX);
+    if (result == 0) {
+        pIX->pVTbl->Release(pIX);
+        printf("Can get pointer to IX via IX\n");
+    }
+    result = pIX->pVTbl->QueryInterface(pIX, &IID_IEcoCalculatorY, (void **) &pIY);
+    if (result == 0) {
+        pIY->pVTbl->Release(pIY);
+        printf("Can get pointer to IY via IX\n");
+    }
+    result = pIX->pVTbl->QueryInterface(pIX, &IID_IEcoLab1, (void **) &pIEcoLab1);
+    if (result == 0) {
+        pIEcoLab1->pVTbl->Release(pIEcoLab1);
+        printf("Can get pointer to IEcoLab1 via IX\n");
+    }
+
+    printf("Start components testing:\n");
+
+    printf("sub: %d - %d = %d\n Right answer: %d\n", 5, 10,
+           pIX->pVTbl->Subtraction(pIX, 5, 10), -5);
+
+	scanf_s("%c", &c);
 	exponent = 2;
 	x = 1;
 	for (j = 1; j < 30; j++) {
 		x = x * 2;
 		printf("x = %f\n", x);
-
 		begin = clock();
 		for (i = 0; i < 1000000; i++) {
 			result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
@@ -164,6 +236,10 @@ Release:
     /* Освобождение тестируемого интерфейса */
     if (pIEcoLab1 != 0) {
         pIEcoLab1->pVTbl->Release(pIEcoLab1);
+    }
+
+    if (pIEcoLab2 != 0) {
+        pIEcoLab2->pVTbl->Release(pIEcoLab2);
     }
 
 
