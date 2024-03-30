@@ -54,9 +54,9 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 	double x, res;
 	char c;
 	clock_t begin, end;
+	int tests[] = {5, 10};
     /* Указатель на тестируемый интерфейс */
     IEcoLab1* pIEcoLab1 = 0;
-
     IEcoCalculatorY* pIY = 0;
     IEcoCalculatorX* pIX = 0;
 
@@ -161,12 +161,25 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
         printf("Can get pointer to IEcoLab1 via IX\n");
     }
 
-    printf("Start components testing:\n");
+    printf("testing components:\n");
 
-    printf("sub: %d - %d = %d\n Right answer: %d\n", 5, 10,
-           pIX->pVTbl->Subtraction(pIX, 5, 10), -5);
+    printf("addition: %d + %d = %d\ncorrect: %d\n", tests[0], tests[1],
+           pIX->pVTbl->Addition(pIX, tests[0], tests[1]), tests[0] + tests[1]);
 
-	scanf_s("%c", &c);
+    printf("substraction: %d - %d = %d\ncorrect: %d\n", tests[0], tests[1],
+           pIX->pVTbl->Subtraction(pIX, tests[0], tests[1]), tests[0] - tests[1]);
+
+    pIX->pVTbl->Release(pIX);
+
+    printf("multiplication: %d * %d = %d\ncorrect: %d\n", tests[0], tests[1],
+           pIY->pVTbl->Multiplication(pIY, tests[0], tests[1]), tests[0] * tests[1]);
+
+    printf("division: %d / %d = %d\ncorrect: %d\n", tests[0], tests[1],
+           pIY->pVTbl->Division(pIY, tests[0], tests[1]), tests[0] / tests[1]);
+
+    pIY->pVTbl->Release(pIY);
+
+	
 	exponent = 2;
 	x = 1;
 	for (j = 1; j < 30; j++) {
