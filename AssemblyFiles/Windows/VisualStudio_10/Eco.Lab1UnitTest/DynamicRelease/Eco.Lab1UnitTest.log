@@ -1,0 +1,4 @@
+﻿  CEcoLab1Sink.c
+..\..\..\UnitTestFiles\SourceFiles\CEcoLab1Sink.c(20): fatal error C1083: Cannot open include file: 'CEcoLab1Sink.h': No such file or directory
+  EcoLab2.c
+..\..\..\UnitTestFiles\SourceFiles\EcoLab2.c(31): fatal error C1083: Cannot open include file: 'CEcoLab1Sink.h': No such file or directory

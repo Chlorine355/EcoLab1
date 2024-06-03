@@ -24,6 +24,13 @@
 #include "IdEcoInterfaceBus1.h"
 #include "IdEcoFileSystemManagement1.h"
 #include "IdEcoLab1.h"
+
+#include "IEcoLab1Events.h"
+#include "IdEcoLab1.h"
+#include "IdEcoList1.h"
+#include "CEcoLab1Sink.h"
+#include "IEcoConnectionPointContainer.h"
+
 #include "IEcoCalculatorY.h"
 #include "IEcoCalculatorX.h"
 #include "IdEcoLab2.h"
@@ -61,6 +68,15 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     IEcoCalculatorX* pIX = 0;
 
     IEcoLab1* pIEcoLab2 = 0;
+
+	/* Указатель на интерфейс контейнера точек подключения */
+    IEcoConnectionPointContainer* pICPC = 0;
+    /* Указатель на интерфейс точки подключения */
+    IEcoConnectionPoint* pICP = 0;
+    /* Указатель на обратный интерфейс */
+    IEcoLab1Events* pIEcoLab1Sink = 0;
+    IEcoUnknown* pISinkUnk = 0;
+    uint32_t cAdvise = 0;
 
     /* Проверка и создание системного интрефейса */
     if (pISys == 0) {
@@ -102,6 +118,8 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
         goto Release;
     }
 
+	
+
     result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoCalculatorY, (void **) &pIY);
     if (result != 0 || pIY == 0) {
         goto Release;
@@ -113,53 +131,6 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     }
 	
 
-	result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoCalculatorX, (void **) &pIX);
-    if (result == 0) {
-        pIX->pVTbl->Release(pIX);
-        printf("Can get pointer to IX via IEcoLab1\n");
-    }
-    result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoCalculatorY, (void **) &pIY);
-    if (result == 0) {
-        pIY->pVTbl->Release(pIY);
-        printf("Can get pointer to IY via IEcoLab1\n");
-    }
-    result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoLab1, (void **) &pIEcoLab1);
-    if (result == 0) {
-        pIEcoLab1->pVTbl->Release(pIEcoLab1);
-        printf("Can get pointer to IEcoLab1 via IEcoLab1\n");
-    }
-
-    result = pIY->pVTbl->QueryInterface(pIY, &IID_IEcoCalculatorX, (void **) &pIX);
-    if (result == 0) {
-        pIX->pVTbl->Release(pIX);
-        printf("Can get pointer to IX via IY\n");
-    }
-    result = pIY->pVTbl->QueryInterface(pIY, &IID_IEcoCalculatorY, (void **) &pIY);
-    if (result == 0) {
-        pIY->pVTbl->Release(pIY);
-        printf("Can get pointer to IY via IY\n");
-    }
-    result = pIY->pVTbl->QueryInterface(pIY, &IID_IEcoLab1, (void **) &pIEcoLab1);
-    if (result == 0) {
-        pIEcoLab1->pVTbl->Release(pIEcoLab1);
-        printf("Can get pointer to IEcoLab1 via IY\n");
-    }
-
-    result = pIX->pVTbl->QueryInterface(pIX, &IID_IEcoCalculatorX, (void **) &pIX);
-    if (result == 0) {
-        pIX->pVTbl->Release(pIX);
-        printf("Can get pointer to IX via IX\n");
-    }
-    result = pIX->pVTbl->QueryInterface(pIX, &IID_IEcoCalculatorY, (void **) &pIY);
-    if (result == 0) {
-        pIY->pVTbl->Release(pIY);
-        printf("Can get pointer to IY via IX\n");
-    }
-    result = pIX->pVTbl->QueryInterface(pIX, &IID_IEcoLab1, (void **) &pIEcoLab1);
-    if (result == 0) {
-        pIEcoLab1->pVTbl->Release(pIEcoLab1);
-        printf("Can get pointer to IEcoLab1 via IX\n");
-    }
 
     printf("testing components:\n");
 
@@ -178,14 +149,6 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
            pIY->pVTbl->Division(pIY, tests[0], tests[1]), tests[0] / tests[1]);
 
     pIY->pVTbl->Release(pIY);
-
-	printf("\nStart testing ldexp interface using aggregated component:\n");
-
-    result = pIBus->pVTbl->QueryComponent(pIBus, &CID_EcoLab2, 0, &IID_IEcoLab1, (void**) &pIEcoLab2);
-    if (result == 0) {
-        printf("Can aggregate IEcoLab1 interface using CEcoLab2\n");
-    }
-	
 	exponent = 2;
 	x = 1;
 	for (j = 1; j < 30; j++) {
@@ -193,7 +156,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 		printf("x = %f\n", x);
 		begin = clock();
 		for (i = 0; i < 1000000; i++) {
-			result = pIEcoLab2->pVTbl->MyFunction(pIEcoLab2, x, exponent, &res);
+			result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
 			//printf("%f * 2^%d = %f\n", x, exponent, res);
 		}
 		end = clock();
@@ -220,7 +183,7 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
 		begin = clock();
 		for (i = 0; i < 1000000; i++) {
-			result = pIEcoLab2->pVTbl->MyFunction(pIEcoLab2, x, exponent, &res);
+			result = pIEcoLab1->pVTbl->MyFunction(pIEcoLab1, x, exponent, &res);
 			// printf("%f * 2^%d = %f\n", x, exponent, res);
 		}
 		end = clock();
@@ -238,6 +201,13 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 	}
 	
 	scanf_s("%c", &c);
+
+	if (pIEcoLab1Sink != 0) {
+        /* Отключение */
+        result = pICP->pVTbl->Unadvise(pICP, cAdvise);
+        pIEcoLab1Sink->pVTbl->Release(pIEcoLab1Sink);
+        pICP->pVTbl->Release(pICP);
+    }
 
 
 Release:

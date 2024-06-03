@@ -25,6 +25,10 @@
 #include "IdEcoMemoryManager1.h"
 #include "IEcoCalculatorY.h"
 #include "IEcoCalculatorX.h"
+#include "IEcoEnumConnections.h"
+#include "IEcoConnectionPointContainer.h"
+#include "CEcoLab1ConnectionPoint.h"
+#include "IEcoLab1Events.h"
 
 
 
@@ -37,6 +41,9 @@ typedef struct CEcoLab1 {
 
     IEcoCalculatorXVTbl* m_pVTblIX;
 
+	/* Таблица функций интерфейса IEcoConnectionPointContainer */
+    IEcoConnectionPointContainerVTbl* m_pVTblICPC;
+
     IEcoUnknownVTbl* m_pVTblINondelegatingUnk;
 
 
@@ -45,6 +52,8 @@ typedef struct CEcoLab1 {
 
     /* Интерфейс для работы с памятью */
     IEcoMemoryAllocator1* m_pIMem;
+	 /* Точка подключения */
+    CEcoLab1ConnectionPoint* m_pISinkCP;
 
     /* Системный интерфейс */
     IEcoSystem1* m_pISys;
