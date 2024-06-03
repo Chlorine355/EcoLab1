@@ -25,7 +25,7 @@
 #include "IdEcoCalculatorE.h"
 #include "IdEcoCalculatorB.h"
 #include "IdEcoCalculatorA.h"
-#include "CEcoLab2.h"
+
 #include <math.h>
 
 #include "CEcoLab1EnumConnectionPoints.h"
@@ -206,7 +206,7 @@ int16_t ECOCALLMETHOD CEcoLab1_MyFunction(/* in */ struct IEcoLab1* me, /* in */
     }
 
 	(*out) = res;
-	CEcoLab1_Fire_OnTestEvent(me, (int16_t)res, exponent);
+	CEcoLab1_Fire_OnTestEvent(me, exponent, (int16_t)res);
 	
     return 0;
 }

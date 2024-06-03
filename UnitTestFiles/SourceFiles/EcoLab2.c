@@ -119,6 +119,42 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
     }
 
 	
+    /* Проверка поддержки подключений обратного интерфейса */
+    result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoConnectionPointContainer, (void **)&pICPC);
+    if (result != 0 || pICPC == 0) {
+        /* Освобождение интерфейсов в случае ошибки */
+        goto Release;
+    }
+
+    /* Запрос на получения интерфейса точки подключения */
+    result = pICPC->pVTbl->FindConnectionPoint(pICPC, &IID_IEcoLab1Events, &pICP);
+    if (result != 0 || pICP == 0) {
+        /* Освобождение интерфейсов в случае ошибки */
+        goto Release;
+    }
+    /* Освобождение интерфейса */
+    pICPC->pVTbl->Release(pICPC);
+
+    /* Создание экземпляра обратного интерфейса */
+    result = createCEcoLab1Sink(pIMem, (IEcoLab1Events**)&pIEcoLab1Sink);
+
+    if (pIEcoLab1Sink != 0) {
+        result = pIEcoLab1Sink->pVTbl->QueryInterface(pIEcoLab1Sink, &IID_IEcoUnknown,(void **)&pISinkUnk);
+        if (result != 0 || pISinkUnk == 0) {
+            /* Освобождение интерфейсов в случае ошибки */
+            goto Release;
+        }
+        /* Подключение */
+        result = pICP->pVTbl->Advise(pICP, pISinkUnk, &cAdvise);
+        /* Проверка */
+        if (result == 0 && cAdvise == 1) {
+            /* Сюда можно добавить код */
+        }
+        /* Освобождение интерфейса */
+        pISinkUnk->pVTbl->Release(pISinkUnk);
+    }
+
+	
 
     result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoCalculatorY, (void **) &pIY);
     if (result != 0 || pIY == 0) {
@@ -208,7 +244,12 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
         pIEcoLab1Sink->pVTbl->Release(pIEcoLab1Sink);
         pICP->pVTbl->Release(pICP);
     }
-
+	if (pIEcoLab1Sink != 0) {
+        /* Отключение */
+        result = pICP->pVTbl->Unadvise(pICP, cAdvise);
+        pIEcoLab1Sink->pVTbl->Release(pIEcoLab1Sink);
+        pICP->pVTbl->Release(pICP);
+    }
 
 Release:
 

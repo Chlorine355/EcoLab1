@@ -118,7 +118,7 @@ int16_t ECOCALLMETHOD CEcoLab1Sink_OnTestEvent(/* in */ struct IEcoLab1Events* m
 		return -1;
 	}
 	
-	printf("testing values %d %d", test1, test2);
+	printf("event fired: testing values exp = %d; result = %d", test1, test2);
 	return 0;
 }
 
