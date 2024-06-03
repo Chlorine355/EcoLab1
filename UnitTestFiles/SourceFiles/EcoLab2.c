@@ -121,13 +121,17 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 	
     /* Проверка поддержки подключений обратного интерфейса */
     result = pIEcoLab1->pVTbl->QueryInterface(pIEcoLab1, &IID_IEcoConnectionPointContainer, (void **)&pICPC);
+	printf("%d", result);
+	scanf_s("%c", &c);
     if (result != 0 || pICPC == 0) {
         /* Освобождение интерфейсов в случае ошибки */
         goto Release;
     }
-
+	printf("queried container\n");
     /* Запрос на получения интерфейса точки подключения */
     result = pICPC->pVTbl->FindConnectionPoint(pICPC, &IID_IEcoLab1Events, &pICP);
+	printf("%d pp", result);
+	scanf_s("%c", &c);
     if (result != 0 || pICP == 0) {
         /* Освобождение интерфейсов в случае ошибки */
         goto Release;
@@ -140,6 +144,8 @@ int16_t EcoMain(IEcoUnknown* pIUnk) {
 
     if (pIEcoLab1Sink != 0) {
         result = pIEcoLab1Sink->pVTbl->QueryInterface(pIEcoLab1Sink, &IID_IEcoUnknown,(void **)&pISinkUnk);
+		printf("%d", result);
+		scanf_s("%c", &c);
         if (result != 0 || pISinkUnk == 0) {
             /* Освобождение интерфейсов в случае ошибки */
             goto Release;
